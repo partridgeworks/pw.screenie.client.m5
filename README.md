@@ -80,3 +80,6 @@ M5Unified is the modern, unified library for all M5Stack devices. Key benefits:
 - **Everything unified**: Buttons, display, speaker, sensors all in one API
 
 
+## Contributing
+
+This is a community-driven project with limited active maintenance.  See CONTRIBUTING.md for more information.
