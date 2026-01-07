@@ -707,6 +707,7 @@ void setup() {
         while (1) M5.delay(1000);
     }
     parentScreen->setScreenManager(screenManager);
+    parentScreen->setNetworkManager(&networkManager);
     screenManager->registerScreen(ScreenType::PARENT, parentScreen);
     
     // Sync restored timer running state to MainScreen (from deep sleep)

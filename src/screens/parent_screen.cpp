@@ -10,6 +10,7 @@
 #include "screen_manager.h"
 #include "persistence.h"
 #include "app_state.h"
+#include "network.h"
 #include "config.h"
 #include "sound.h"
 #include "timer.h"
@@ -27,6 +28,7 @@ ParentScreen::ParentScreen(M5GFX& display, UI& ui, ScreenTimer& timer)
     , _ui(ui)
     , _timer(timer)
     , _screenManager(nullptr)
+    , _networkManager(nullptr)
     , _isUnlocked(false)
     , _sequenceIndex(0)
 {
@@ -34,6 +36,10 @@ ParentScreen::ParentScreen(M5GFX& display, UI& ui, ScreenTimer& timer)
 
 void ParentScreen::setScreenManager(ScreenManager* manager) {
     _screenManager = manager;
+}
+
+void ParentScreen::setNetworkManager(NetworkManager* network) {
+    _networkManager = network;
 }
 
 // ============================================================================
@@ -215,7 +221,7 @@ void ParentScreen::setupMenu() {
     AppState& appState = AppState::getInstance();
     if (appState.isLoggedIn()) {
         _menu.addItem("Change child", onChangeChildSelected, this, true);
-        _menu.addItem("Logout", onLogoutSelected, this, true);
+        _menu.addItem("Wipe & Reset", onLogoutSelected, this, true);
     }
     
     Serial.printf("[ParentScreen] Menu initialized with %d items\n", _menu.getItemCount());
@@ -355,6 +361,21 @@ void ParentScreen::handleLogout() {
     // Clear persistence and reset state
     AppState& appState = AppState::getInstance();
     appState.clearPersistence();
+
+    _ui.showNotification("Logging out", 0);
+    
+    // Clear NTP Sync Time and Resync
+    PersistenceManager::getInstance().saveLastNtpSyncTime(0);
+    Serial.println("[ParentScreen] Cleared NTP sync time");
+    
+    if (_networkManager) {
+        if (_networkManager->ensureConnected()) {
+            Serial.println("[ParentScreen] Re-syncing NTP time...");
+            _networkManager->syncTimeAndSetRTC(true);  // Force sync
+        } else {
+            Serial.println("[ParentScreen] Could not connect for NTP resync");
+        }
+    }
     
     // Debug print to verify cleared
     PersistenceManager::getInstance().debugPrint();

@@ -19,6 +19,7 @@
 // Forward declarations
 class ScreenManager;
 class ScreenTimer;
+class NetworkManager;
 
 /**
  * ParentScreen - Parent/admin access screen
@@ -59,6 +60,12 @@ public:
      */
     void setScreenManager(ScreenManager* manager);
     
+    /**
+     * Set the network manager (for NTP sync on logout)
+     * @param network Pointer to network manager
+     */
+    void setNetworkManager(NetworkManager* network);
+    
     // ========================================================================
     // Screen Lifecycle
     // ========================================================================
@@ -93,6 +100,7 @@ private:
     UI& _ui;
     ScreenTimer& _timer;
     ScreenManager* _screenManager;
+    NetworkManager* _networkManager;
     DropdownMenu _menu;
     
     // Unlock state

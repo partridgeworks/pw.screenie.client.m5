@@ -219,7 +219,7 @@ constexpr char DEFAULT_USER_INITIAL = 'S';
 // ============================================================================
 
 constexpr const char* APP_NAME = "Screenie";
-constexpr const char* APP_VERSION = "1.0.2";
+constexpr const char* APP_VERSION = "1.0.3";
 
 // ============================================================================
 // ANIMATION TIMING
